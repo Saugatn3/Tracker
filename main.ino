@@ -7,7 +7,11 @@
 #define BLYNK_AUTH_TOKEN "h2K-pbD4qqrLRann094yiGSSeHfyD_GO"
 #define WIFI_SSID "King's LANding"
 #define WIFI_PASSWORD "lumbini@534"
+#define APN "web"
+#define USERNAME ""         
+#define PASSWORD ""
 #define MAX_TIME_FOR_INTERNET_RESET 10
+#define SerialAT Serial1
 
 int watchdogWiFiConnectCounter = 0;
 
@@ -16,29 +20,26 @@ int watchdogWiFiConnectCounter = 0;
 TinyGPSPlus gps;
 
 TinyGsm modem(SerialAT);
+//TinyGsmClient client(modem);
 
 
 void setup() {
-  Serial.begin(115200); // Initialize Serial Monitor for debugging
+  Serial.begin(19200); // Initialize Serial Monitor for debugging
+  Serial1.begin(115200);
   Serial2.begin(9600, SERIAL_8N1, 27, 26); // Initialize Serial2 for GPS communication
-
-  // Connect to Wi-Fi
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   
-  while (WiFi.status() != WL_CONNECTED) {
+  while (!modem.restart()) {
+    Serial.println("Modem initialization failed. Trying again...");
     delay(1000);
-    
-    Serial.println("Connecting to WiFi...");
-    // if sms received , sms = RESET , restart
-    watchdogWiFiConnectCounter++;
-    
-    if (watchdogWiFiConnectCounter == MAX_TIME_FOR_INTERNET_RESET) {
-      // TODO : Send sms that gprs connection failed.
-      ESP.restart();
-     }
-    
   }
-  Serial.println("Connected to WiFi!");
+  Serial.println("Modem initialized successfully.");
+
+  while (!modem.gprsConnect(APN, USERNAME, PASSWORD)) {
+    Serial.println("GPRS connection failed. Trying again...");
+    delay(1000);
+  }
+  Serial.println("GPRS connected successfully!");
+}
 
   Blynk.begin(BLYNK_AUTH_TOKEN, WIFI_SSID, WIFI_PASSWORD);
 }

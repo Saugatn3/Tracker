@@ -1,44 +1,21 @@
-
 #define SIM800L_AXP192_VERSION_20200327
 
-// Define the serial console for debug prints, if needed
-#define DUMP_AT_COMMANDS
-#define TINY_GSM_DEBUG          SerialMon
-
-#include "C:\Users\user\Desktop\utilities.h"
-
-
-// Set serial for debug console (to the Serial Monitor, default speed 115200)
-#define SerialMon Serial
 // Set serial for AT commands (to the module)
 #define SerialAT  Serial1
 
 // Configure TinyGSM library
 #define TINY_GSM_MODEM_SIM800          // Modem is SIM800
-#define TINY_GSM_RX_BUFFER      1024   // Set RX buffer to 1Kb
-
+#define TINY_GSM_RX_BUFFER 1024   // Set RX buffer to 1Kb
+#include "C:\Users\user\Desktop\sketch_jul18a\utilities.h"
 #include <TinyGsmClient.h>
-
-#ifdef DUMP_AT_COMMANDS
-#include <StreamDebugger.h>
-StreamDebugger debugger(SerialAT, SerialMon);
-TinyGsm modem(debugger);
-#else
 TinyGsm modem(SerialAT);
-#endif
 
 // Set phone numbers, if you want to test SMS and Calls
-#define SMS_TARGET  "number"
-#define CALL_TARGET "+number"
-
+#define SMS_TARGET  "+9779865498607"
+#define CALL_TARGET "+9779864063381"
 
 void setup()
 {
-    // Set console baud rate
-    SerialMon.begin(115200);
-
-    delay(10);
-
     // Start power management
     if (setupPMU() == false) {
         Serial.println("Setting power error");
@@ -57,8 +34,8 @@ void loop()
 {
     // Restart takes quite some time
     // To skip it, call init() instead of restart()
-    SerialMon.println("Initializing modem...");
-    modem.restart();
+    Serial.println("Initializing modem...");
+    modem.init();
 
     // Swap the audio channels
     SerialAT.print("AT+CHFA=1\r\n");
@@ -85,10 +62,10 @@ void loop()
     Serial.println(res ? "OK" : "fail");
 
     // Hang up after 20 seconds
-    delay(10000/2);
+    delay(20000);
 
     res = modem.callHangup();
-    DBG("Hang up:", res ? "OK" : "fail");
+    Serial.println(res ? "Hang up: OK" : "Hang up: fail");
 
     // Do nothing forevermore
     while (true) {

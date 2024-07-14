@@ -1,8 +1,8 @@
 int called=0;
 #define SIM800L_AXP192_VERSION_20200327
-#define BLYNK_TEMPLATE_ID "TMPL6HSATnYDn"
+#define BLYNK_TEMPLATE_ID "YOUR_BLYNK_TEMPLATE_ID"
 #define BLYNK_TEMPLATE_NAME "gps"
-#define BLYNK_AUTH_TOKEN "UZzKU4HnX8oI8U8VDSIiRx8GJsMayEzH"
+#define BLYNK_AUTH_TOKEN "YOUR_BLYNK_AUTH_TOKEN"
 #define TINY_GSM_MODEM_SIM800
 #include "C:\Users\user\Desktop\sketch_jul18a\utilities.h"
 #include <TinyGsmClient.h>
